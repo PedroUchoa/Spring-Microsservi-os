@@ -16,7 +16,7 @@ public class ProposalNotIntergratedListener {
     @RabbitListener(queues = "${rabbitmq.queue.proposta.pendente}")
     public void proposalNotIntegrated(Proposal proposal){
         String message =String.format(ConstantMessage.PROPOSTA_EM_ANALISE,proposal.getUsers().getName());
-        notificationSnsService.notification(message);
+        notificationSnsService.notification(proposal.getUsers().getPhone(), message);
     }
 
 
