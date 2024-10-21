@@ -19,5 +19,10 @@ public class ProposalNotIntergratedListener {
         notificationSnsService.notification(proposal.getUsers().getPhone(), message);
     }
 
+    @RabbitListener(queues = "${rabbitmq.queue.proposta.concluida}")
+    public void proposalFinished(Proposal proposal){
+        String message =String.format(ConstantMessage.PROPOSTA_APROVADA,proposal.getUsers().getName());
+        notificationSnsService.notification(proposal.getUsers().getPhone(), message);
+    }
 
 }

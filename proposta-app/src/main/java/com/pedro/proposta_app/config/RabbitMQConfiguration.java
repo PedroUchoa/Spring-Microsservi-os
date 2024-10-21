@@ -40,6 +40,11 @@ public class RabbitMQConfiguration {
     }
 
     @Bean
+    public Queue criarFIlaProposataPendenteDlq(){
+        return QueueBuilder.durable("proposta-pendente.dlq").build();
+    }
+
+    @Bean
     public RabbitAdmin criarRabbitAdmin(ConnectionFactory connectionFactory){
         return new RabbitAdmin(connectionFactory);
     }
@@ -57,6 +62,10 @@ public class RabbitMQConfiguration {
     @Bean
     public FanoutExchange criarFanoutExchangePropostaConcluida(){
         return ExchangeBuilder.fanoutExchange(exchangePropostaConcluida).build();
+    }
+
+    @Bean FanoutExchange deadLetterExchange(){
+        return ExchangeBuilder.fanoutExchange("proposta-pendente-dlx.ex").build();
     }
 
     @Bean
@@ -83,6 +92,11 @@ public class RabbitMQConfiguration {
                 .to(criarFanoutExchangePropostaConcluida());
     }
 
+    @Bean
+    public Binding criarBinding(){
+        return BindingBuilder.bind(criarFIlaProposataPendenteDlq()).to(deadLetterExchange());
+    }
+
     public Jackson2JsonMessageConverter jackson2JsonMessageConverter(){
         return new Jackson2JsonMessageConverter();
     }
@@ -95,5 +109,7 @@ public class RabbitMQConfiguration {
 
         return rabbitTemplate;
     }
+
+
 
 }
